@@ -1,0 +1,29 @@
+directories:
+  logdir: logs
+  georawdir: GEOraw
+  geometadir: GEOmeta
+  geotmpdir: 'GEOmeta/tmp'
+  affyrawdir: affyRaw
+  aromaroot: aroma
+urls:
+  geosoftlink: 'http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?form=text&acc='
+cancer_matchwords:
+  - cancer
+  - leukemia
+  - lymphoma
+  - malignant
+  - sarcoma
+  - tumor
+  - tumour
+  - gliom
+  - melanom
+  - myelodyspl
+  - myelom
+  - cml
+  - cll
+  - refractory
+  - mds
+cancer_nomatch:
+  - autism
+  - autistic
+  - GWAS
