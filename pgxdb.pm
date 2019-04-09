@@ -39,13 +39,17 @@ sub new {
   };
   bless $self, $class;
 
+	$self->{parameters}	=		{ map{ $_ => $self->{config}->{parameters}->{$_} } keys %{ $self->{config}->{parameters} } };
+
   foreach (grep{ /^\-\w/ } keys %$args) {
     my $key		  =		$_;
     $key				=~	s/^\-//;
     if ($args->{$_}	=~ /./) {
     	$self->{parameters}->{$key}	=		$args->{$_} }
+    if (grep{ /^$key$/ } qw(help h ?)) {
+    	$self->{parameters}->{help}	=		1 }
   }
-
+  
   return $self;
 
 }

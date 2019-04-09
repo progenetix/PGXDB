@@ -1,9 +1,12 @@
 package PGXDB::Utilities;
 
+use Term::ProgressBar;
+
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
   pgxdb_month_to_number
+  print_help
 );
 
 
@@ -37,5 +40,21 @@ sub pgxdb_month_to_number {
 }
 
 
+sub print_help {
+
+	my $pgxdb			=		shift;
+	
+	if (! $pgxdb->{parameters}->{help}) { return $pgxdb }
+
+	my $term_bar		=		"\n".("=" x Term::ProgressBar->new({count => 1, silent => 1})->{term_width})."\n";
+	print $term_bar."\n";
+	foreach (sort keys %{ $pgxdb->{parameters} }) {
+		print "-$_ $pgxdb->{parameters}->{$_}\n";
+	}
+	print $term_bar;
+
+	exit;
+
+}
 
 1;

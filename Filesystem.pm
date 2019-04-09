@@ -75,6 +75,7 @@ sub pgxdb_create_log_file_names {
 	
 	$pgxdb->{logfiles} =   {
 		gsmDataFile       =>  $pgxdb->{paths}->{logdir}.'/gsminfo.tab',
+		gsmLogFile       	=>  $pgxdb->{paths}->{logdir}.'/gsmlog.tab',
 		gseDataFile       =>  $pgxdb->{paths}->{logdir}.'/gseinfo.tab',
 		gsmIdFile         =>  $pgxdb->{paths}->{logdir}.'/gsmids.tab',
 		pmidAllFile       =>  $pgxdb->{paths}->{logdir}.'/pmid.tab',
@@ -97,9 +98,9 @@ sub pgxdb_create_log_file_names {
 			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,selpf_$pgxdb->{parameters}->{selpf}.tab/;
 	}}
 
-	if ($pgxdb->{parameters}->{arraymap} =~ /y/i) {
+	if ($pgxdb->{parameters}->{amexclude} =~ /y/i) {
 		foreach (keys %{ $pgxdb->{logfiles} }) {
-			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,with_arraymap.tab/;
+			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,excluding_arraymap.tab/;
 	}}
 	
 	return $pgxdb;

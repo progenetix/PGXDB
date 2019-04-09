@@ -1,5 +1,6 @@
 package PGXDB::GEOmetaData;
 
+use Data::Dumper;
 use File::Copy;
 use LWP::Simple;
 
@@ -43,7 +44,7 @@ sub pgxdb_GEO_GSMs_from_GPL {
 
 =cut
 
-  my $pgxdb      =   shift;
+  my $pgxdb     =   shift;
 
 	my $i					=		0;
 	my $gplNo			=		@{ $pgxdb->{platforms}->{selected} };
@@ -56,9 +57,9 @@ sub pgxdb_GEO_GSMs_from_GPL {
     my $file		=		$pgxdb->{paths}->{geotmpdir}.'/'.$gpl.'.geometa.soft';
 
     if (
-      ! -f $file
+      (! -f $file)
       ||
-      $pgxdb->{parameters}->{forcegpl} =~ /^y/
+      $pgxdb->{parameters}->{forcegpl} =~ /y/i
     ) {
   		print "\n".'trying '.$gpl.' ('.$i.'/'.$gplNo.')';
   		my $status		=		getstore($url, $file);
@@ -91,7 +92,7 @@ sub pgxdb_GEO_GSMs_from_GPL {
 
 		foreach my $gsm (grep{ /^GSM\d+?$/ } @$ids){
 
-			if (! grep { /^$gsm$/ } @{$pgxdb->{samples}->{existing}} ) {
+			if (! grep { /^$gsm$/ } @{ $pgxdb->{samples}->{existing} } ) {
 				$pgxdb->{samples}->{new}->{$gsm} = $gpl }
 		}
 
@@ -121,10 +122,11 @@ http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM487790&form=text
 		$i++;		
     my $url			=		$pgxdb->{config}->{urls}->{geosoftlink}.$gsm;
     my $file		=		$pgxdb->{paths}->{geotmpdir}.'/'.$gsm.'.geometa.soft';
+
     if (
-      ! -f $file
+      (! -f $file)
       ||
-      $pgxdb->{parameters}->{forcegsm} =~ /^y/
+      $pgxdb->{parameters}->{forcegsm} =~ /y/i
     ) {
   		print "\n".'trying '.$gsm.' ('.$i.'/'.$gsmNo.')';
   		my $status			=		getstore($url, $file);
@@ -184,14 +186,16 @@ http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM487790&form=text
 			$pgxdb->{samples}->{meta}->{$gsm}->{submission_date}  =  join('-', ($year, $mon, $day));
 		}
 
-		# CEL file
-		my $celFileFTP  =   [ grep{ /Sample_supplementary_file \= ftp.*?\.gz.*?/i } @lines ];
+		# probe file
+		my @probeFileFTPs 		=   grep{ /Sample_supplementary_file \= ftp.*?\.gz.*?/i } @lines;
 #		my $celFileFTP  =   [ grep{ /Sample_supplementary_file \= ftp.*?\.CEL\.gz.*?/i } @lines ];
-		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =   $celFileFTP->[0];
-		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =~  s/^.*?\= ?ftp/ftp/;
-		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =~  s/(\.CEL(\.tar)?\.gz).*?$/$1/;
-		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =~  s/\#/\%23/g;
-		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_number}   =   scalar @{ $celFileFTP };
+  	for my $f (0..$#probeFileFTPs) {
+  		$probeFileFTPs[$f]	=~  s/^.*?\= ?ftp/ftp/;
+  		$probeFileFTPs[$f]	=~  s/((\.tar)?\.gz).*?$/$1/;
+  		$probeFileFTPs[$f]	=~  s/\#/\%23/g;
+  	}
+		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =   join('::', @probeFileFTPs);
+		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_number}   =   scalar @probeFileFTPs;
 
 		##########################################################################
 
@@ -236,9 +240,9 @@ sub pgxdb_GEO_GSE_metadata {
     my $file		=		$pgxdb->{paths}->{geotmpdir}.'/'.$gse.'.geometa.soft';
 
     if (
-      ! -f $file
+      (! -f $file)
       ||
-      $pgxdb->{parameters}->{forcegse} =~ /^y/
+      $pgxdb->{parameters}->{forcegse} =~ /y/i
     ) {
   		print 'trying '.$gse.' ('.$i.'/'.$gseNo.')'."\n";
   		my $status		=		getstore($url, $file);

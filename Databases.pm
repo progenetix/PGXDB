@@ -18,6 +18,9 @@ sub pgxdb_get_database_platforms {
 	use MongoDB;
 
 	my $pgxdb			=		shift;
+	$pgxdb->{platforms}->{existing}	=		[];
+	
+	if ($pgxdb->{parameters}->{selpf} =~ /.../i) { return $pgxdb }
 
   my $dbconn    =   MongoDB::MongoClient->new()->get_database('arraymap');
   my $distincts =   $dbconn->run_command([
@@ -40,6 +43,10 @@ sub pgxdb_get_database_platforms {
 sub pgxdb_get_database_samples {
 
 	my $pgxdb			=		shift;
+	
+	$pgxdb->{samples}->{existing}		=		[];
+	
+	if ($pgxdb->{parameters}->{amexclude} !~ /y/i) { return $pgxdb }
 
   my $dbconn    =   MongoDB::MongoClient->new()->get_database('arraymap');
   my $distincts =   $dbconn->run_command([
@@ -63,7 +70,12 @@ sub pgxdb_filter_platforms {
 
 	my $pgxdb			=		shift;
 	$pgxdb->{platforms}->{selected}	=		[];
-	
+
+	if ($pgxdb->{parameters}->{selpf} =~ /.../i) {
+		$pgxdb->{platforms}->{selected}	=		[ split(',', $pgxdb->{parameters}->{selpf} ) ];
+		return $pgxdb;
+	}
+
 	foreach my $pfId (@{$pgxdb->{platforms}->{existing}}, @{ $pgxdb->{arrayconfig}->{platforms}->{blessed} }) {
 		if (! grep{ /^$pfId$/ } (@{ $pgxdb->{platforms}->{selected} }, @{ $pgxdb->{arrayconfig}->{platforms}->{excluded} }) ) {
 			push(@{ $pgxdb->{platforms}->{selected} }, $pfId) }
