@@ -3,6 +3,7 @@ package PGXDB::GEOmetaData;
 use Data::Dumper;
 use File::Copy;
 use LWP::Simple;
+use LWP::Protocol::https;
 
 use PGXDB::Utilities;
 
@@ -63,11 +64,11 @@ sub pgxdb_GEO_GSMs_from_GPL {
     ) {
   		print "\n".'trying '.$gpl.' ('.$i.'/'.$gplNo.')';
   		my $status		=		getstore($url, $file);
-  		print "\n!!! No file could be fetched for $gpl.\n" unless is_success($status);
+  		print "\n!!! No file file be loaded from\n$url\n" unless is_success($status);
   	}
 
     if (! -f $file) {
-      print 'no file could be loaded: '.$file."\n";
+      print 'No file was found at '.$file."\n";
       next;
     }
 
@@ -95,7 +96,6 @@ sub pgxdb_GEO_GSMs_from_GPL {
 			if (! grep { /^$gsm$/ } @{ $pgxdb->{samples}->{existing} } ) {
 				$pgxdb->{samples}->{new}->{$gsm} = $gpl }
 		}
-
   }
 
   return  $pgxdb;
@@ -130,8 +130,13 @@ http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM487790&form=text
     ) {
   		print "\n".'trying '.$gsm.' ('.$i.'/'.$gsmNo.')';
   		my $status			=		getstore($url, $file);
-  		print "\n!!! No file could be fetched for $gsm.\n" unless is_success($status);
+  		print "\n!!! No file file be loaded from\n$url\n" unless is_success($status);
   	}
+
+    if (! -f $file) {
+      print 'no file could be loaded: '.$file."\n";
+      next;
+    }
 
     $pgxdb->{samples}->{meta}->{$gsm}  =   {
 			GSM         =>  $gsm,
@@ -144,11 +149,6 @@ http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM487790&form=text
 			submission_date 	=>  'NA',
 			probefile_number  =>  0,
 		};
-
-    if (! -f $file) {
-      print 'no file could be loaded: '.$file."\n";
-      next;
-    }
 
 		my @lines;		
 		my $fCont 	=   q{};
@@ -197,7 +197,7 @@ http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM487790&form=text
 		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_ftp}  =   join('::', @probeFileFTPs);
 		$pgxdb->{samples}->{meta}->{$gsm}->{probefile_number}   =   scalar @probeFileFTPs;
 
-		##########################################################################
+		############################################################################
 
 		if ($gse !~ /^GSE\d+?$|^possibly_private$/) {
 			unlink $file;
@@ -246,7 +246,7 @@ sub pgxdb_GEO_GSE_metadata {
     ) {
   		print 'trying '.$gse.' ('.$i.'/'.$gseNo.')'."\n";
   		my $status		=		getstore($url, $file);
-  		print "no file could be fetched\n" unless is_success($status);
+  		print "No file file be loaded from\n$url\n" unless is_success($status);
   	}
 
     $pgxdb->{series}->{meta}->{$gse}	=   {

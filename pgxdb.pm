@@ -1,4 +1,4 @@
-package PGXDB::pgxdb;
+package PGXDB;
 
 use Data::Dumper;
 use File::Basename;
@@ -38,8 +38,13 @@ sub new {
     series			=>	{},
   };
   bless $self, $class;
-
+  
 	$self->{parameters}	=		{ map{ $_ => $self->{config}->{parameters}->{$_} } keys %{ $self->{config}->{parameters} } };
+
+  if (! grep{ /\-./ }  keys %$args) {
+  	$self->{parameters}->{help}	=		1;
+  	return $self;
+  }
 
   foreach (grep{ /^\-\w/ } keys %$args) {
     my $key		  =		$_;

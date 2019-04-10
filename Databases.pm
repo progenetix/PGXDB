@@ -20,7 +20,8 @@ sub pgxdb_get_database_platforms {
 	my $pgxdb			=		shift;
 	$pgxdb->{platforms}->{existing}	=		[];
 	
-	if ($pgxdb->{parameters}->{selpf} =~ /.../i) { return $pgxdb }
+	if ($pgxdb->{parameters}->{sel_platforms} =~ /.../i) 	{ return $pgxdb }
+	if ($pgxdb->{parameters}->{am_platforms} =~ /n/i) 		{ return $pgxdb }
 
   my $dbconn    =   MongoDB::MongoClient->new()->get_database('arraymap');
   my $distincts =   $dbconn->run_command([
@@ -42,11 +43,12 @@ sub pgxdb_get_database_platforms {
 
 sub pgxdb_get_database_samples {
 
-	my $pgxdb			=		shift;
-	
+	use MongoDB;
+
+	my $pgxdb			=		shift;	
 	$pgxdb->{samples}->{existing}		=		[];
 	
-	if ($pgxdb->{parameters}->{amexclude} !~ /y/i) { return $pgxdb }
+	if ($pgxdb->{parameters}->{am_samples} =~ /y/i) { return $pgxdb }
 
   my $dbconn    =   MongoDB::MongoClient->new()->get_database('arraymap');
   my $distincts =   $dbconn->run_command([
@@ -71,8 +73,8 @@ sub pgxdb_filter_platforms {
 	my $pgxdb			=		shift;
 	$pgxdb->{platforms}->{selected}	=		[];
 
-	if ($pgxdb->{parameters}->{selpf} =~ /.../i) {
-		$pgxdb->{platforms}->{selected}	=		[ split(',', $pgxdb->{parameters}->{selpf} ) ];
+	if ($pgxdb->{parameters}->{sel_platforms} =~ /.../i) {
+		$pgxdb->{platforms}->{selected}	=		[ split(',', $pgxdb->{parameters}->{sel_platforms} ) ];
 		return $pgxdb;
 	}
 

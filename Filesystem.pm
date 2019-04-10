@@ -3,10 +3,11 @@ package PGXDB::Filesystem;
 require Exporter;
 use Data::Dumper;
 use File::Path qw(make_path);
+use Term::ProgressBar;
 
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
-  pgxdb_check_root_dir
+  pgxdb_check_files_dirs
   pgxdb_create_paths
   pgxdb_create_log_file_names
 );
@@ -16,33 +17,22 @@ use File::Path qw(make_path);
 # utilities ####################################################################
 ################################################################################
 
-sub pgxdb_check_root_dir {
+sub pgxdb_check_files_dirs {
 
-	my $pgxdb			=		shift;	
-
-	my $error			=		q{};
-	if ($pgxdb->{parameters}->{out} !~ /[\w\.]/) {	
-		$error			=		'No output location was specified. Please provide an existing directory using the "-out" parameter.' }
-	elsif (! -d $pgxdb->{parameters}->{out}) {
-		$error			=		'
-The specified root directory
-  '.$pgxdb->{parameters}->{out}.'
-... does not exist. Please create it first, or change the "-out" parameter' }
-		
-	if ($error =~ /.../) {
+	my $pgxdb			=		shift;
+	my $filekey		=		shift;
 	
-		print <<END;
+	if ($filekey !~ /^[\w\-\.]+?$/) { return $pgxdb }
 
-############################################################
+	my $term_bar		=		"\n".("=" x Term::ProgressBar->new({count => 1, silent => 1})->{term_width})."\n";
 
-$error
-
-############################################################
-
-END
-		
+	if (
+		(! -e $pgxdb->{parameters}->{$filekey})
+		||
+		$pgxdb->{parameters}->{$filekey}	!~ /./
+	) {
+		print $term_bar.$pgxdb->{config}->{fileerrors}->{$filekey}->{message}.$term_bar;
 		exit;
-		
 	}
 	
 	$pgxdb->{parameters}->{out}	=~	s/\/$//;
@@ -50,13 +40,14 @@ END
 
 }
 
+
 ################################################################################
 
 sub pgxdb_create_paths {
 
 	my $pgxdb			=		shift;
 
-	$pgxdb->pgxdb_check_root_dir();
+	$pgxdb->pgxdb_check_files_dirs('out');
 
 	foreach (keys %{ $pgxdb->{config}->{directories} }) { 
 		$pgxdb->{paths}->{$_}	=		$pgxdb->{parameters}->{out}.'/'.$pgxdb->{config}->{directories}->{$_};
@@ -93,12 +84,12 @@ sub pgxdb_create_log_file_names {
 			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,randpf_$pgxdb->{parameters}->{randpf}.tab/;
 	}}
 
-	if ( $pgxdb->{parameters}->{selpf} =~ /GPL/ ) {
+	if ( $pgxdb->{parameters}->{sel_platforms} =~ /GPL/ ) {
 		foreach (keys %{ $pgxdb->{logfiles} }) {
-			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,selpf_$pgxdb->{parameters}->{selpf}.tab/;
+			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,selpf_$pgxdb->{parameters}->{sel_platforms}.tab/;
 	}}
 
-	if ($pgxdb->{parameters}->{amexclude} =~ /y/i) {
+	if ($pgxdb->{parameters}->{am_samples} =~ /n/i) {
 		foreach (keys %{ $pgxdb->{logfiles} }) {
 			$pgxdb->{logfiles}->{ $_ } =~  s/\.tab$/,excluding_arraymap.tab/;
 	}}

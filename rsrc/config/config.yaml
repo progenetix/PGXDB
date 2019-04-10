@@ -1,10 +1,11 @@
 parameters:
-  out: ""       # output root directory has to be specified
-  amexclude: y  # arraymap is queried & existing samples are omitted
+  out: ""         # output root directory has to be specified
+  am_samples: n   # arraymap is queried & existing samples are omitted
   randno: -1
   randpf: -1
-  selpf: ""
-  forcegpl: y   # default is updating this, in case new GSMs exist
+  sel_platforms: ""
+  am_platforms: y  # existing arraymap platforms will be included
+  forcegpl: y     # default is updating this, in case new GSMs exist
   forcegsm: n
   forcegse: n
   probefiles: ".CEL,.gff,.txt,.tab,.tsv,.xls,.odt"
@@ -17,6 +18,13 @@ directories:
   aromaroot: aroma
 urls:
   geosoftlink: 'http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?form=text&acc='
+fileerrors:
+  out:
+    type: '-d'
+    message: 'No existing output location was specified. Please provide an existing directory using the "-out" parameter.'
+  gsmfile:
+    type: '-f'
+    message: 'No existing GSM info file was specified. Please provide a file generated from the metadata downloader using the "-gsmfile" parameter.'    
 cancer_matchwords:
   - cancer
   - leukemia
