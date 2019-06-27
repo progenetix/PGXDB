@@ -1,3 +1,49 @@
+databases:
+  progenetix:
+    collections:
+      publications:
+        query:
+          counts.genomes:
+            { '$gt': 0 }
+      biosubsets:
+        query: {}
+      datacollections:
+        query: {}
+      individuals:
+        query: {}
+      biosamples:
+        query: {}
+        distincts:
+          ncit: "biocharacteristics.type.id"
+          icdom: "biocharacteristics.type.id"
+          icdot: "biocharacteristics.type.id"
+          pubmed: "external_references.type.id"
+          'geo:GSE': "external_references.type.id"
+      callsets:
+        query: {}
+      variants:
+        query: {}
+  arraymap:
+    collections:
+      biosubsets:
+        query: {}
+      datacollections:
+        query: {}
+      individuals:
+        query: {}
+      biosamples:
+        query: {}
+        distincts: # the key is used in searches against the field (value)
+          ncit: "biocharacteristics.type.id"
+          icdom: "biocharacteristics.type.id"
+          icdot: "biocharacteristics.type.id"
+          pubmed: "external_references.type.id"
+          'geo:GSE': "external_references.type.id"
+      callsets:
+        query: {}
+      variants:
+        query: {}
+
 parameters:
   out: ""         # output root directory has to be specified
   am_samples: n   # arraymap is queried & existing samples are omitted
@@ -24,7 +70,7 @@ fileerrors:
     message: 'No existing output location was specified. Please provide an existing directory using the "-out" parameter.'
   gsmfile:
     type: '-f'
-    message: 'No existing GSM info file was specified. Please provide a file generated from the metadata downloader using the "-gsmfile" parameter.'    
+    message: 'No existing GSM info file was specified. Please provide a file generated from the metadata downloader using the "-gsmfile" parameter.'
 cancer_matchwords:
   - cancer
   - leukemia
