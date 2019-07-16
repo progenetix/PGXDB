@@ -14,11 +14,21 @@ databases:
       biosamples:
         query: {}
         distincts:
-          ncit: "biocharacteristics.type.id"
-          icdom: "biocharacteristics.type.id"
-          icdot: "biocharacteristics.type.id"
-          pubmed: "external_references.type.id"
-          'geo:GSE': "external_references.type.id"
+          ncit:
+            attr: "biocharacteristics.type.id"
+            match: "ncit"
+          icdom:
+            attr: "biocharacteristics.type.id"
+            match: "icdom"
+          icdot:
+            attr: "biocharacteristics.type.id"
+            match: "icdot"
+          pubmed:
+            attr: "external_references.type.id"
+            match: "pubmed"
+          'geo:GSE':
+            attr: "external_references.type.id"
+            match: 'geo:GSE'
       callsets:
         query: {}
       variants:
@@ -33,17 +43,74 @@ databases:
         query: {}
       biosamples:
         query: {}
-        distincts: # the key is used in searches against the field (value)
-          ncit: "biocharacteristics.type.id"
-          icdom: "biocharacteristics.type.id"
-          icdot: "biocharacteristics.type.id"
-          pubmed: "external_references.type.id"
-          'geo:GSE': "external_references.type.id"
+        distincts:
+          ncit:
+            attr: "biocharacteristics.type.id"
+            match: "ncit"
+          icdom:
+            attr: "biocharacteristics.type.id"
+            match: "icdom"
+          icdot:
+            attr: "biocharacteristics.type.id"
+            match: "icdot"
+          pubmed:
+            attr: "external_references.type.id"
+            match: "pubmed"
+          'geo:GSE':
+            attr: "external_references.type.id"
+            match: 'geo:GSE'
       callsets:
         query: {}
       variants:
         query: {}
-
+  dipg:
+    collections:
+      biosamples:
+        query: {}
+        distincts:
+          ncit:
+            attr: "biocharacteristics.type.id"
+            match: "ncit"
+          icdom:
+            attr: "biocharacteristics.type.id"
+            match: "icdom"
+          icdot:
+            attr: "biocharacteristics.type.id"
+            match: "icdot"
+          pubmed:
+            attr: "external_references.type.id"
+            match: "pubmed"
+          'geo:GSE':
+            attr: "external_references.type.id"
+            match: 'geo:GSE'
+      callsets:
+        query: {}
+      variants:
+        query: {}
+  tcga:
+    collections:
+      biosamples:
+        query: {}
+        distincts:
+          ncit:
+            attr: "biocharacteristics.type.id"
+            match: "ncit"
+          icdom:
+            attr: "biocharacteristics.type.id"
+            match: "icdom"
+          icdot:
+            attr: "biocharacteristics.type.id"
+            match: "icdot"
+          pubmed:
+            attr: "external_references.type.id"
+            match: "pubmed"
+          'geo:GSE':
+            attr: "external_references.type.id"
+            match: 'geo:GSE'
+      callsets:
+        query: {}
+      variants:
+        query: {}
 parameters:
   out: ""         # output root directory has to be specified
   am_samples: n   # arraymap is queried & existing samples are omitted
