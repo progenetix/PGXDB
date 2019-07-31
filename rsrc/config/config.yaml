@@ -111,6 +111,11 @@ databases:
         query: {}
       variants:
         query: {}
+aggregation_scopes:
+  external_references:
+    attr: "external_references.type.id"
+  biocharacteristics:
+    attr: "biocharacteristics.type.id"
 parameters:
   out: ""         # output root directory has to be specified
   am_samples: n   # arraymap is queried & existing samples are omitted

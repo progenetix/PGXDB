@@ -255,6 +255,7 @@ sub pgxdb_GEO_GSE_metadata {
 			geosoft_local =>  'NA',
 			PMID    	=>  'NA',
 			GPL     	=>  'NA',
+			bioproject		=>	'NA',
 			contact_name 	=>  'NA',
 			contact_email =>  'NA',
 			city    	=>  'Atlantis',
@@ -333,13 +334,19 @@ sub pgxdb_GEO_GSE_metadata {
 		my $pmid    =   ( grep{ /Series_pubmed_id ?\= ?\d+/ } @lines )[0];
 		$pmid       =~  s/[^\d]//g;
 
-		if ($pmid  =~ /^\d+?$/) {
-			$pgxdb->{series}->{meta}->{ $gse }->{PMID} =   $pmid }
+		# bioproject
+		my @bioprojects = 	grep{ /Series_relation.+?bioproject/i } @lines;
+  	for my $bi (0..$#bioprojects) {
+  		$bioprojects[$bi] =~  s/^.*?\/(\w+?)$/$1/g;
+  	}
+
+		if (grep{ /.../i } @bioprojects) {
+			$pgxdb->{series}->{meta}->{ $gse }->{bioproject} 	=   join(',', @bioprojects) }
 
 		my $gseSoft     =   $gseDir.'/geometa.soft';
 		copy($file, $gseSoft);
 
-		$pgxdb->{series}->{meta}->{ $gse }->{geosoft_local}  =   $gseSoft;
+		$pgxdb->{series}->{meta}->{ $gse }->{geosoft_local} =   $gseSoft;
 
   }
 

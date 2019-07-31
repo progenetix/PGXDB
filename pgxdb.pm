@@ -40,6 +40,7 @@ sub new {
   bless $self, $class;
   
 	$self->{parameters}	=		{ map{ $_ => $self->{config}->{parameters}->{$_} } keys %{ $self->{config}->{parameters} } };
+	$self->{dataset_names}	=		[ keys %{ $self->{config}->{databases} } ];
 
   if (! grep{ /\-./ }  keys %$args) {
   	$self->{parameters}->{help}	=		1;
